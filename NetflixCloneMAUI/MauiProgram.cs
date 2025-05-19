@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NetflixCloneMAUI.Pages;
 using NetflixCloneMAUI.Services;
+using NetflixCloneMAUI.ViewModels;
 
 namespace NetflixCloneMAUI;
 
@@ -27,7 +28,13 @@ public static class MauiProgram
 			httpClient => httpClient.BaseAddress = new Uri("https://api.themoviedb.org"));
 
 		builder.Services.AddSingleton<TmdbService>();
+		builder.Services.AddSingleton<HomeViewModel>();
 		builder.Services.AddSingleton<MainPage>();
+
+		builder.Services.AddSingleton<CategoriesViewModel>();
+		builder.Services.AddSingleton<CategoriesPage>();
+
+		builder.Services.AddTransientWithShellRoute<DetailsPage, DetailsViewModel>(nameof(DetailsPage));
 
 		return builder.Build();
 	}
