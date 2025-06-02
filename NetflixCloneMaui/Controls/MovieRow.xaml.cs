@@ -1,42 +1,59 @@
 using NetflixCloneMAUI.Models;
-using NetflixCloneMAUI.Pages;
 using NetflixCloneMAUI.ViewModels;
 using System.Windows.Input;
 
 namespace NetflixCloneMAUI.Controls;
 
-public partial class MovieInfoBox : ContentView
+public class MediaSelectEventArgs : EventArgs
 {
-    public static readonly BindableProperty MediaProperty =
-        BindableProperty.Create(nameof(Media), typeof(Media), typeof(MovieInfoBox), null);
+    public Media Media { get; set; }
 
-    public event EventHandler Closed;
+    public MediaSelectEventArgs(Media media) => Media = media;
+}
 
-    public MovieInfoBox()
+public partial class MovieRow : ContentView
+{
+    public static readonly BindableProperty HeadingProperty =
+            BindableProperty.Create(nameof(Heading), typeof(string), typeof(MovieRow), string.Empty);
+
+    public static readonly BindableProperty MoviesProperty =
+            BindableProperty.Create(nameof(Movies), typeof(IEnumerable<Media>), typeof(MovieRow), Enumerable.Empty<Media>());
+
+    public static readonly BindableProperty IsLargeProperty =
+            BindableProperty.Create(nameof(IsLarge), typeof(bool), typeof(MovieRow), false);
+
+    public event EventHandler<MediaSelectEventArgs> MediaSelected;
+
+    public MovieRow()
     {
         InitializeComponent();
-        ClosedCommand = new Command(ExecuteClosedCommand);
-
-    }
-    public Media Media
-    {
-        get => (Media)GetValue(MovieInfoBox.MediaProperty);
-        set => SetValue(MovieInfoBox.MediaProperty, value);
+        MediaDetailsCommand = new Command(ExecuteMediaDetailsCommand);
     }
 
-    public ICommand ClosedCommand { get; private set; }
-    private void ExecuteClosedCommand() =>
-        Closed?.Invoke(this, EventArgs.Empty);
-
-    private void Button_Clicked(object sender, EventArgs e) =>
-        Closed?.Invoke(this, EventArgs.Empty);
-
-    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    public string Heading
     {
-        var parameters = new Dictionary<string, object>
+        get => (string)GetValue(MovieRow.HeadingProperty);
+        set => SetValue(MovieRow.HeadingProperty, value);
+    }
+    public IEnumerable<Media> Movies
+    {
+        get => (IEnumerable<Media>)GetValue(MovieRow.MoviesProperty);
+        set => SetValue(MovieRow.MoviesProperty, value);
+    }
+    public bool IsLarge
+    {
+        get => (bool)GetValue(MovieRow.IsLargeProperty);
+        set => SetValue(MovieRow.IsLargeProperty, value);
+    }
+
+    public bool IsNotLarge => !IsLarge;
+
+    public ICommand MediaDetailsCommand { get; private set; }
+    private void ExecuteMediaDetailsCommand(object parameter)
+    {
+        if (parameter is Media media && media is not null)
         {
-            [nameof(DetailsViewModel.Media)] = Media
-        };
-        await Shell.Current.GoToAsync(nameof(DetailsPage), true, parameters);
+            MediaSelected?.Invoke(this, new MediaSelectEventArgs(media));
+        }
     }
 }
