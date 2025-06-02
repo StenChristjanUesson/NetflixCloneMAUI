@@ -1,4 +1,4 @@
-﻿ ﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NetflixCloneMAUI.Pages.MainPage"
@@ -158,39 +158,3 @@
     </Grid>
 
 </ContentPage>
-
-using NetflixCloneMAUI.ViewModels;
-
-namespace NetflixCloneMAUI.Pages;
-
-public partial class MainPage : ContentPage
-{
-    private readonly HomeViewModel _homeViewModel;
-    public MainPage(HomeViewModel homeViewModel)
-    {
-        InitializeComponent();
-        _homeViewModel = homeViewModel;
-        BindingContext = _homeViewModel;
-    }
-
-    protected async override void OnAppearing()
-    {
-        base.OnAppearing();
-        await _homeViewModel.InitializeAsync();
-    }
-
-    private void MovieRow_MediaSelected(object sender, Controls.MediaSelectEventArgs e)
-    {
-        _homeViewModel.SelectMediaCommand.Execute(e.Media);
-    }
-
-    private void MovieInfoBox_Closed(object sender, EventArgs e)
-    {
-        _homeViewModel.SelectMediaCommand.Execute(null);
-    }
-
-    private async void CategoriesMenu_Tapped(object sender, TappedEventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(CategoriesPage));
-    }
-}

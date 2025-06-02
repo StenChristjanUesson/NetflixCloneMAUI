@@ -91,6 +91,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="App.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Controls\MovieInfoBox.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
