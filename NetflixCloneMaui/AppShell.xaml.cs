@@ -1,9 +1,13 @@
-namespace NetflixCloneMaui;
+using NetflixCloneMAUI.Pages;
 
-public partial class NewPage1 : ContentPage
+namespace NetflixCloneMAUI;
+
+public partial class AppShell : Shell
 {
-	public NewPage1()
-	{
-		InitializeComponent();
-	}
+    public AppShell()
+    {
+        InitializeComponent();
+
+        Routing.RegisterRoute(nameof(CategoriesPage), typeof(CategoriesPage));
+    }
 }
